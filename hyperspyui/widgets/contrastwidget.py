@@ -26,6 +26,7 @@ from qtpy import QtCore, QtWidgets
 
 from .extendedqwidgets import FigureWidget, ExDoubleSlider, ExClickLabel
 from hyperspy.misc.rgb_tools import rgbx2regular_array
+from hyperspy.drawing.utils import contrast_stretching
 from hyperspyui.util import win2fig, fig2image_plot, block_signals
 
 import numpy as np
@@ -52,6 +53,7 @@ def _set_auto_contrast(plot, auto):
 class ContrastWidget(FigureWidget):
     LevelLabel = tr("Level")
     WindowLabel = tr("Window")
+    SaturatedLabel = tr("Saturated pixel")
 
     def __init__(self, main_window, parent, figure=None):
         super(ContrastWidget, self).__init__(main_window, parent)
@@ -82,6 +84,7 @@ class ContrastWidget(FigureWidget):
         if p is None:
             self.sl_level.setValue(0.0)
             self.sl_window.setValue(0.0)
+            self.sl_saturated.setValue(0.0)
             self.chk_log.setChecked(False)
             self.disable()
         else:
@@ -98,6 +101,12 @@ class ContrastWidget(FigureWidget):
                 window = p.vmax - p.vmin
                 self.sl_window.setValue(window)
                 self.lbl_window.setText(self.WindowLabel + ": %.2G" % window)
+
+            with block_signals(self.sl_saturated):
+                saturated = 0.75
+                self.sl_saturated.setValue(saturated)
+                self.lbl_saturated.setText(self.SaturatedLabel + ": %.2f" % 
+                                           saturated)
 
             with block_signals(self.chk_auto):
                 auto = _auto_contrast(p)
@@ -133,6 +142,20 @@ class ContrastWidget(FigureWidget):
                 self.chk_auto.setChecked(False)
             p.update()
 
+    def saturated_changed(self, value):
+        self.lbl_saturated.setText(self.SaturatedLabel + ": %.2f" % value)
+        p = self._cur_plot
+        if p is not None:
+            p.vmax, p.vmin = contrast_stretching(p.data_function(), value)
+            p.update()
+            with block_signals(self.sl_level):
+                self.sl_level.setValue(p.vmin)
+                self.lbl_level.setText(self.LevelLabel + ": %.2G" % p.vmin)
+            with block_signals(self.sl_window):
+                window = p.vmax - p.vmin
+                self.sl_window.setValue(window)
+                self.lbl_window.setText(self.WindowLabel + ": %.2G" % window)
+
     def log_changed(self, value):
         p = self._cur_plot
         if p is not None and p.ax.images:
@@ -148,8 +171,10 @@ class ContrastWidget(FigureWidget):
     def enable(self, enabled=True):
         self.lbl_level.setEnabled(enabled)
         self.lbl_window.setEnabled(enabled)
+        self.lbl_saturated.setEnabled(enabled)
         self.sl_level.setEnabled(enabled)
         self.sl_window.setEnabled(enabled)
+        self.sl_saturated.setEnabled(enabled)
         self.chk_auto.setEnabled(enabled)
         self.chk_log.setEnabled(enabled)
 
@@ -171,15 +196,22 @@ class ContrastWidget(FigureWidget):
         imin, imax = self._plot_minmax()
         self.sl_window.setValue(imax - imin)   # Will trigger events
 
+    def reset_saturated(self):
+        self.sl_saturated.setValue(0.75)   # Will trigger events
+
     def create_controls(self):
         self.sl_level = ExDoubleSlider(self, QtCore.Qt.Horizontal)
         self.lbl_level = ExClickLabel(self.LevelLabel + ": 0.0")
         self.sl_window = ExDoubleSlider(self, QtCore.Qt.Horizontal)
         self.lbl_window = ExClickLabel(self.WindowLabel + ": 0.0")
+        self.sl_saturated = ExDoubleSlider(self, QtCore.Qt.Horizontal)
+        self.lbl_saturated = ExClickLabel(self.SaturatedLabel + ": 0.0")
 
         for sl in [self.sl_level, self.sl_window]:
             sl.setRange(0.0, 1.0)
             sl.setValue(0.0)
+        self.sl_saturated.setRange(0.0, 100.0)
+        self.sl_saturated.setValue(0.0)
 
         self.chk_auto = QtWidgets.QCheckBox(tr("Auto"), self)
         self.chk_log = QtWidgets.QCheckBox(tr("Log"), self)
@@ -187,8 +219,10 @@ class ContrastWidget(FigureWidget):
         # Test level/window working?
         self.lbl_level.clicked.connect(self.reset_level)
         self.lbl_window.clicked.connect(self.reset_window)
+        self.lbl_saturated.clicked.connect(self.reset_saturated)
         self.sl_level.double_valueChanged.connect(self.level_changed)
         self.sl_window.double_valueChanged.connect(self.window_changed)
+        self.sl_saturated.double_valueChanged.connect(self.saturated_changed)
         self.chk_auto.stateChanged[int].connect(self.auto)
         self.chk_log.toggled[bool].connect(self.log_changed)
 
@@ -197,7 +231,8 @@ class ContrastWidget(FigureWidget):
         hbox.addWidget(self.chk_log)
         vbox = QtWidgets.QVBoxLayout()
         for w in [self.sl_level, self.lbl_level,
-                  self.sl_window, self.lbl_window]:
+                  self.sl_window, self.lbl_window,
+                  self.sl_saturated, self.lbl_saturated]:
             vbox.addWidget(w)
         vbox.addLayout(hbox)
 
