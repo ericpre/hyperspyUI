@@ -6,7 +6,7 @@ env:
     - ENV=conda
     - ENV_NAME=test_env
     - MINIMAL_ENV=false
-    - TEST_DEPS="pytest pytest-cov"
+    - TEST_DEPS="pytest pytest-cov" # for pip installation
 
 services:
   - xvfb

@@ -6,22 +6,8 @@ environment:
   matrix:
      - CONDA_PYTHON_VERSION: 3.7
        PLATFORM: x64
-     - CONDA_PYTHON_VERSION: 3.7
-       PLATFORM: x86
      - CONDA_PYTHON_VERSION: 3.6
        PLATFORM: x64
-     - CONDA_PYTHON_VERSION: 3.6
-       PLATFORM: x86
-       TAG_SCENARIO: true
-
-for:
--
-  # tagged scenario
-  matrix:
-    only:
-      - TAG_SCENARIO: true
-
-  skip_non_tags: true
 
 install:
   - ps: Add-AppveyorMessage "Clone CI repo"
