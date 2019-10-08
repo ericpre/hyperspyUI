@@ -59,15 +59,17 @@ jobs:
     displayName: Install test dependencies
 
   - bash: |
-      sudo apt-get install -y libxkbcommon-x11-0  # herbstluftwm
+      sudo apt-get install -y herbstluftwm
       export DISPLAY=:99.0
-      Xvfb :99 -screen 0 1920x1200x24 -ac +extension GLX +render -noreset &
-      sleep 3
+      sh -e /etc/init.d/xvfb start
+      sleep 1
+      herbstluftwm &
+      sleep 1
     displayName: Configure headless display 
 
   - bash: |
       source activate $ENV_NAME
-      pytest --mpl --pyargs hyperspyui
+      pytest --pyargs hyperspyui
     displayName: Run test suite
 
   - task: GithubRelease@0 
@@ -126,7 +128,7 @@ jobs:
 
   - bash: |
       source activate $ENV_NAME
-      pytest --mpl --pyargs hyperspyui
+      pytest --pyargs hyperspyui
     displayName: Run test suite
 
   - task: GithubRelease@0 
@@ -196,7 +198,7 @@ jobs:
 
   - bash: |
       source activate $ENV_NAME
-      pytest --mpl --pyargs hyperspyui
+      pytest --pyargs hyperspyui
     displayName: Run test suite
 
   - task: GithubRelease@0 
