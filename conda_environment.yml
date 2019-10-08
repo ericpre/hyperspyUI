@@ -1,0 +1,19 @@
+name: test_env
+channels:
+- defaults
+- conda-forge
+dependencies:
+# Minimal dependencies
+- autopep8
+- hyperspy
+- hyperspy-gui-traitsui
+- matplotlib
+- pyface
+- pyqode.python
+- qtconsole
+- qtpy
+- traits
+- traitsui
+
+
+

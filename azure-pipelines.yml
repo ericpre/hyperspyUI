@@ -1,0 +1,192 @@
+variables:
+  ENV_NAME: test_env
+  MPLBACKEND: agg
+  TEST_DEPS: pytest pytest-qt pytest-cov pytest-azurepipelines
+
+trigger:
+  tags:
+    include:
+    # build on any tag
+    - '*'
+  branches:
+    include:
+    # build on all branches
+    - '*'
+
+jobs:
+- job:
+  displayName: ubuntu-16.04
+  pool:
+    vmImage: 'ubuntu-16.04'
+  strategy:
+    matrix:
+      Python37:
+        CONDA_PYTHON_VERSION: '3.7'
+      Python36:
+        CONDA_PYTHON_VERSION: '3.6'
+
+  steps:
+  - bash: |
+      git clone --depth 1 git://github.com/ericpre/ci.git
+    displayName: Clone CI repository
+
+  - bash: |
+      echo "##vso[task.prependpath]$CONDA/bin"
+    displayName: Add conda to PATH
+
+  - bash: |
+      source ci/conda_setup_environment.sh
+    displayName: Setup Anaconda packages
+
+  - bash: |
+      source activate $ENV_NAME
+      pip install .
+      conda list
+    displayName: Install package
+
+  - bash: |
+      source activate $ENV_NAME
+      python setup.py sdist bdist_wheel
+    displayName: Generate distribution archives
+
+  - publish: $(Build.SourcesDirectory)/dist/*
+    artifact: HyperSpyUI
+    displayName: Publish artifact
+
+  - bash: |
+      source activate $ENV_NAME
+      conda install -y $TEST_DEPS
+    displayName: Install test dependencies
+
+  - bash: |
+      source activate $ENV_NAME
+      #pytest --mpl --pyargs hyperspyui
+    displayName: Run test suite
+
+  - task: GithubRelease@0 
+    displayName: 'Update GitHub Release'
+    inputs:
+      # Token needs to be created in github and added to azure
+      gitHubConnection: github_release_token_hyperspy_azure
+      action: edit # Release should already have been created
+      tag: $(Build.SourceBranchName)
+      repositoryName: hyperspy/hyperspyUI
+      assets: $(Build.SourcesDirectory)/dist/*.whl
+      assetUploadMode: replace
+
+- job:
+  displayName: vs2017-win2016
+  pool:
+    vmImage: 'vs2017-win2016'
+  strategy:
+    matrix:
+      Python37:
+        CONDA_PYTHON_VERSION: '3.7'
+
+  steps:
+  - bash: |
+      git clone --depth 1 git://github.com/ericpre/ci.git
+    displayName: Clone CI repository
+
+  - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+    displayName: Add conda to PATH
+
+  - bash: |
+      source activate $ENV_NAME
+      pip install .
+      conda list
+    displayName: Install package
+
+  - bash: |
+      source activate $ENV_NAME
+      python setup.py sdist bdist_wheel
+    displayName: Generate distribution archives
+
+  - publish: $(Build.SourcesDirectory)/dist/*
+    artifact: HyperSpyUI
+    displayName: Publish artifact
+
+  - bash: |
+      source activate $ENV_NAME
+      conda install -y $TEST_DEPS
+    displayName: Install test dependencies
+
+  - bash: |
+      source activate $ENV_NAME
+      #pytest --mpl --pyargs hyperspyui
+    displayName: Run test suite
+
+  - task: GithubRelease@0 
+    displayName: 'Update GitHub Release'
+    inputs:
+      # Token needs to be created in github and added to azure
+      gitHubConnection: github_release_token_hyperspy_azure
+      action: edit # Release should already have been created
+      tag: $(Build.SourceBranchName)
+      repositoryName: hyperspy/hyperspyUI
+      assets: $(Build.SourcesDirectory)/dist/*.whl
+      assetUploadMode: replace
+
+- job:
+  displayName: macOS-10.13
+  pool:
+    vmImage: 'macOS-10.13'
+  strategy:
+    matrix:
+      Python37:
+        CONDA_PYTHON_VERSION: '3.7'
+
+  steps:
+  - bash: |
+      git clone --depth 1 git://github.com/ericpre/ci.git
+    displayName: Clone CI repository
+
+  - bash: |
+      echo "##vso[task.prependpath]$CONDA/bin"
+    displayName: Add conda to PATH
+
+  # On Hosted macOS, the agent user doesn't have ownership of Miniconda's installation directory/
+  # We need to take ownership if we want to update conda or install packages globally
+  - bash: sudo chown -R $USER $CONDA
+    displayName: Take ownership of conda installation
+
+  - bash: |
+      source ci/conda_setup_environment.sh
+    displayName: Setup Anaconda packages
+
+  - bash: |
+      source activate $ENV_NAME
+      pip install .
+      conda list
+    displayName: Install package
+
+  - bash: |
+      source activate $ENV_NAME
+      python setup.py sdist bdist_wheel
+    displayName: Generate distribution archives
+
+  - publish: $(Build.SourcesDirectory)/dist/*
+    artifact: HyperSpyUI
+    displayName: Publish artifact
+
+  - bash: |
+      source activate $ENV_NAME
+      conda install -y $TEST_DEPS
+    displayName: Install test dependencies
+
+  - bash: |
+      source activate $ENV_NAME
+      #pytest --mpl --pyargs hyperspyui
+    displayName: Run test suite
+
+  - task: GithubRelease@0 
+    displayName: 'Update GitHub Release'
+    inputs:
+      # Token needs to be created in github and added to azure
+      gitHubConnection: github_release_token_hyperspy_azure
+      action: edit # Release should already have been created
+      tag: $(Build.SourceBranchName)
+      repositoryName: hyperspy/hyperspyUI
+      assets: $(Build.SourcesDirectory)/dist/*.whl
+      assetUploadMode: replace
+
