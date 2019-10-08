@@ -50,7 +50,7 @@ jobs:
     displayName: Generate distribution archives
 
   - publish: $(Build.SourcesDirectory)/dist
-    artifact: HyperSpyUI-Linux-$(CONDA_PYTHON_VERSION)
+    artifact: $(Build.Repository.Name)-Linux-$(CONDA_PYTHON_VERSION)
     displayName: Publish artifact
 
   - bash: |
@@ -109,7 +109,7 @@ jobs:
     displayName: Generate distribution archives
 
   - publish: $(Build.SourcesDirectory)/dist
-    artifact: HyperSpyUI-Windows-$(CONDA_PYTHON_VERSION)
+    artifact: $(Build.Repository.Name)-Windows-$(CONDA_PYTHON_VERSION)
     displayName: Publish artifact
 
   - bash: |
@@ -174,7 +174,7 @@ jobs:
     displayName: Generate distribution archives
 
   - publish: $(Build.SourcesDirectory)/dist
-    artifact: HyperSpyUI-MacOSX-$(CONDA_PYTHON_VERSION)
+    artifact: $(Build.Repository.Name)-MacOSX-$(CONDA_PYTHON_VERSION)
     displayName: Publish artifact
 
   - bash: |
