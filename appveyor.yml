@@ -1,48 +1,66 @@
-# Do not build feature branch with open Pull Requests
-skip_branch_with_pr: true
-
-# environment variables
 environment:
 
   global:
-    DEPS: "hyperspy-gui-traitsui qtpy pyqode.python"
-    TEST_DEPS: "pytest pytest-qt pytest-cov"
+    ENV_NAME: test_env
 
   matrix:
-    - PY_VERSION: 3.7
-    - PY_VERSION: 3.6
-    - PY_VERSION: 3.5
+     - CONDA_PYTHON_VERSION: 3.7
+       PLATFORM: x64
+     - CONDA_PYTHON_VERSION: 3.7
+       PLATFORM: x86
+     - CONDA_PYTHON_VERSION: 3.6
+       PLATFORM: x64
+     - CONDA_PYTHON_VERSION: 3.6
+       PLATFORM: x86
+       TAG_SCENARIO: true
 
-# scripts that run after cloning repository
+for:
+-
+  # tagged scenario
+  matrix:
+    only:
+      - TAG_SCENARIO: true
+
+  skip_non_tags: true
+
 install:
-  # Activate miniconda root environment
-  - "CALL C:\\Miniconda37-x64\\Scripts\\activate.bat"
+  - ps: Add-AppveyorMessage "Clone CI repo"
+  - git clone --depth 1 git://github.com/ericpre/ci.git
 
-  # Setup miniconda environment.
-  - ps: Add-AppveyorMessage "Setup miniconda environment..."
-  # See https://github.com/conda/conda/issues/8836 & others
-  - set "PATH=%MINICONDA%\condabin:%PATH%"
-  - "conda update -y -n base -c defaults conda"
-  - 'conda config --add channels conda-forge'
-  - "conda create -y -n testenv python=%PY_VERSION%"
-  - "activate testenv"
+  - ps: Add-AppveyorMessage "Setting up Miniconda"
+  - call ci\appveyor\conda_activate.bat
+  - call ci\appveyor\conda_setup_environment.bat
+  - conda activate %ENV_NAME%
 
-  # Install the dependencies of hyperspyUI.
-  - 'conda install -yq %DEPS% %TEST_DEPS%'
+  - ps: Add-AppveyorMessage "Install package"
+  - pip install .
+  # Fix issue with conda not in PATH anymore
+  #- conda list
 
-  # Install our package
-  - 'pip install -e .'
+build: false
 
-build: off
-
-# to run your custom scripts instead of automatic tests
 test_script:
-  - 'pytest -l --cov-report html --cov=hyperspyui'
+  # Run the project tests
+  - ps: Add-AppveyorMessage "Running tests..."
+  - pytest --pyargs hyperspyui
+  - ps: Add-AppveyorMessage "Testing completed."
 
-after_test:
-  - 'python setup.py bdist_wheel'
+#after_test:
+#  - python setup.py clean
+#  - python setup.py bdist_wheel
 
 artifacts:
   - path: dist\*.whl
-    name: wheel
+    name: win_wheels
 
+deploy:
+  provider: GitHub
+  auth_token:
+    # Add encrypted key 
+    secure: 
+  artifact: win_wheels  # upload wheels to release assets
+  draft: false
+  prerelease: false
+  force_update: true
+  on:
+    appveyor_repo_tag: true        # deploy on tag push only
