@@ -6,7 +6,7 @@ env:
     - ENV=conda
     - ENV_NAME=test_env
     - MINIMAL_ENV=false
-    - DEPS_OPTIONAL="pyqt" # for pip installation
+    - DEPS_OPTIONAL="PyQt5" # for pip installation
     - TEST_DEPS="pytest pytest-qt pytest-cov" # for pip installation
 
 services:
