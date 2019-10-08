@@ -6,7 +6,7 @@ env:
     - ENV=conda
     - ENV_NAME=test_env
     - MINIMAL_ENV=false
-    - DEPS="pyqt" # for pip installation
+    - DEPS_OPTIONAL="pyqt" # for pip installation
     - TEST_DEPS="pytest pytest-qt pytest-cov" # for pip installation
 
 services:
@@ -16,11 +16,7 @@ matrix:
   include:
     # All tests run for the latest supported Python version in Linux
   - env: export CONDA_PYTHON_VERSION=3.7
-  - env: export CONDA_PYTHON_VERSION=3.7; MINIMAL_ENV=true
   - env: export ENV=pip
-    language: python
-    python: 3.7
-  - env: export ENV=pip; MINIMAL_ENV=true
     language: python
     python: 3.7
     # Only standard test for older supported versions of Python in Linux
