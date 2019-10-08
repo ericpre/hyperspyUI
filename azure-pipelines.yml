@@ -65,6 +65,8 @@ jobs:
 
   - task: GithubRelease@0 
     displayName: 'Update GitHub Release'
+    # Release only on tag (branch name start with 'refs/tags/')
+    condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
     inputs:
       # Token needs to be created in github and added to azure
       gitHubConnection: github_release_token_ericpre_azure
@@ -122,6 +124,8 @@ jobs:
 
   - task: GithubRelease@0 
     displayName: 'Update GitHub Release'
+    # Release only on tag (branch name start with 'refs/tags/')
+    condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
     inputs:
       # Token needs to be created in github and added to azure
       gitHubConnection: github_release_token_ericpre_azure
@@ -185,6 +189,8 @@ jobs:
 
   - task: GithubRelease@0 
     displayName: 'Update GitHub Release'
+    # Release only on tag (branch name start with 'refs/tags/')
+    condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
     inputs:
       # Token needs to be created in github and added to azure
       gitHubConnection: github_release_token_ericpre_azure
