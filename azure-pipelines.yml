@@ -67,7 +67,7 @@ jobs:
     displayName: 'Update GitHub Release'
     inputs:
       # Token needs to be created in github and added to azure
-      gitHubConnection: github_release_token_hyperspy_azure
+      gitHubConnection: github_release_token_ericpre_azure
       action: edit # Release should already have been created
       tag: $(Build.SourceBranchName)
       repositoryName: hyperspy/hyperspyUI
@@ -120,7 +120,7 @@ jobs:
     displayName: 'Update GitHub Release'
     inputs:
       # Token needs to be created in github and added to azure
-      gitHubConnection: github_release_token_hyperspy_azure
+      gitHubConnection: github_release_token_ericpre_azure
       action: edit # Release should already have been created
       tag: $(Build.SourceBranchName)
       repositoryName: hyperspy/hyperspyUI
@@ -183,7 +183,7 @@ jobs:
     displayName: 'Update GitHub Release'
     inputs:
       # Token needs to be created in github and added to azure
-      gitHubConnection: github_release_token_hyperspy_azure
+      gitHubConnection: github_release_token_ericpre_azure
       action: edit # Release should already have been created
       tag: $(Build.SourceBranchName)
       repositoryName: hyperspy/hyperspyUI
