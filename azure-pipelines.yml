@@ -49,8 +49,8 @@ jobs:
       python setup.py sdist bdist_wheel
     displayName: Generate distribution archives
 
-  - publish: $(Build.SourcesDirectory)/dist/*
-    artifact: HyperSpyUI
+  - publish: $(Build.SourcesDirectory)/dist
+    artifact: HyperSpyUI-Linux-$(CONDA_PYTHON_VERSION)
     displayName: Publish artifact
 
   - bash: |
@@ -92,6 +92,10 @@ jobs:
     displayName: Add conda to PATH
 
   - bash: |
+      source ci/conda_setup_environment.sh
+    displayName: Setup Anaconda packages
+
+  - bash: |
       source activate $ENV_NAME
       pip install .
       conda list
@@ -102,8 +106,8 @@ jobs:
       python setup.py sdist bdist_wheel
     displayName: Generate distribution archives
 
-  - publish: $(Build.SourcesDirectory)/dist/*
-    artifact: HyperSpyUI
+  - publish: $(Build.SourcesDirectory)/dist
+    artifact: HyperSpyUI-Windows-$(CONDA_PYTHON_VERSION)
     displayName: Publish artifact
 
   - bash: |
@@ -165,8 +169,8 @@ jobs:
       python setup.py sdist bdist_wheel
     displayName: Generate distribution archives
 
-  - publish: $(Build.SourcesDirectory)/dist/*
-    artifact: HyperSpyUI
+  - publish: $(Build.SourcesDirectory)/dist
+    artifact: HyperSpyUI-MacOSX-$(CONDA_PYTHON_VERSION)
     displayName: Publish artifact
 
   - bash: |

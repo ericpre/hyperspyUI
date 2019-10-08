@@ -5,11 +5,12 @@ channels:
 dependencies:
 # Minimal dependencies
 - autopep8
-- hyperspy
+- hyperspy-base
 - hyperspy-gui-traitsui
 - matplotlib
 - pyface
 - pyqode.python
+- pyqt
 - qtconsole
 - qtpy
 - traits
