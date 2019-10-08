@@ -1,62 +1,64 @@
-language: python
+language: generic
 
 env:
+  # We set the default value in global and changed it in the matrix when necessary
   global:
-    - DEPS="hyperspy-gui-traitsui qtpy pyqode.python"
-    - TEST_DEPS="pytest pytest-qt"
+    - ENV=conda
+    - ENV_NAME=test_env
+    - MINIMAL_ENV=false
+    - TEST_DEPS="pytest pytest-cov"
 
-addons:
-  apt:
-    packages: herbstluftwm
+services:
+  - xvfb
 
 matrix:
   include:
-  - env: export PYTHON=3.7
-  - env: export PYTHON=3.6
-  - env: export PYTHON=3.5
-  - env: export PYTHON=3.7
+    # All tests run for the latest supported Python version in Linux
+  - env: export CONDA_PYTHON_VERSION=3.7
+  - env: export CONDA_PYTHON_VERSION=3.7; MINIMAL_ENV=true
+  - env: export ENV=pip
+    language: python
+    python: 3.7
+  - env: export ENV=pip; MINIMAL_ENV=true
+    language: python
+    python: 3.7
+    # Only standard test for older supported versions of Python in Linux
+  - env: export CONDA_PYTHON_VERSION=3.6
+    # All tests, but the min requirements test run for the latest supported Python version in OSx
+  - env: export CONDA_PYTHON_VERSION=3.7
     os: osx
-    language: generic
-  - env: export PYTHON=3.6
+  - env: export CONDA_PYTHON_VERSION=3.6
     os: osx
-    language: generic
-    if: tag IS present
-  - env: export PYTHON=3.5
-    os: osx
-    language: generic
     if: tag IS present
 
 before_install:
-  - if [ $TRAVIS_OS_NAME = osx ]; then
-      curl "https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh" -o miniconda.sh;
-    else wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-    fi
-  - chmod +x miniconda.sh;
-    ./miniconda.sh -b -p $HOME/miniconda;
-    hash -r;
+  # Clone the ci repo to get the ci setup scripts and execute the script
+  - git clone --depth 1 git://github.com/ericpre/ci.git
+  - source ci/travis/setup_travis.sh
 
 install:
-  - source $HOME/miniconda/bin/activate root;
-  - conda update -yq conda
-  - conda create -n testenv --yes python=$PYTHON;
-    source activate testenv;
-    conda install -y -c conda-forge $DEPS $TEST_DEPS;
-  - pip install -e .
-
-before_script:
-  # configure a headless display
-  - |
-    if [ $TRAVIS_OS_NAME = linux ]; then
-      export DISPLAY=:99.0
-      sh -e /etc/init.d/xvfb start
-      sleep 1
-      herbstluftwm &
-      sleep 1
-    else
-      ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok ) &
-      sleep 1
-    fi
+  # Install the package
+  - pip install .
 
 script:
-  - python -c 'import matplotlib.pyplot as plt; print(plt.get_backend())';
-  - pytest;
+  - which python
+  - python -c 'import matplotlib.pyplot as plt; print("Matplotlib backend:", plt.get_backend())';
+  - pytest --pyargs hyperspyui;
+
+after_success:
+- coveralls
+- python setup.py bdist_wheel sdist;
+
+before_deploy:
+- export DISTRIB=$(ls ./dist/*);
+
+deploy:
+  provider: releases
+  api_key:
+    # Add the secure key created and set in the travis account settings
+    secure: # For example ${GITHUB_TOKEN_ERICPRE}
+  file: "${DISTRIB}"
+  skip_cleanup: true
+  on:
+    tags: true
+    condition: $MINIMAL_ENV = false
