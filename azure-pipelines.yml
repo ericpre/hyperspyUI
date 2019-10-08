@@ -1,7 +1,7 @@
 variables:
   ENV_NAME: test_env
-  MPLBACKEND: agg
-  TEST_DEPS: pytest pytest-qt pytest-cov pytest-azurepipelines
+  DISPLAY: :99.0
+  TEST_DEPS: pytest pytest-azurepipelines
 
 trigger:
   tags:
@@ -59,17 +59,14 @@ jobs:
     displayName: Install test dependencies
 
   - bash: |
-      sudo apt-get install -y herbstluftwm
-      export DISPLAY=:99.0
-      sh -e /etc/init.d/xvfb start
-      sleep 1
-      herbstluftwm &
-      sleep 1
+      sudo apt-get install -y libxkbcommon-x11-0  # herbstluftwm
+      Xvfb $DISPLAY -screen 0 1920x1200x24 -ac -nolisten unix &
+      sleep 3
     displayName: Configure headless display 
 
   - bash: |
       source activate $ENV_NAME
-      pytest --pyargs hyperspyui
+      pytest
     displayName: Run test suite
 
   - task: GithubRelease@0 
@@ -190,11 +187,6 @@ jobs:
       source activate $ENV_NAME
       conda install -y $TEST_DEPS
     displayName: Install test dependencies
-
-  - bash: |
-      ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok ) &
-      sleep 1
-    displayName: Configure headless display 
 
   - bash: |
       source activate $ENV_NAME
