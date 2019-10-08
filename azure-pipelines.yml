@@ -60,7 +60,7 @@ jobs:
 
   - bash: |
       source activate $ENV_NAME
-      #pytest --mpl --pyargs hyperspyui
+      pytest --mpl --pyargs hyperspyui
     displayName: Run test suite
 
   - task: GithubRelease@0 
@@ -119,7 +119,7 @@ jobs:
 
   - bash: |
       source activate $ENV_NAME
-      #pytest --mpl --pyargs hyperspyui
+      pytest --mpl --pyargs hyperspyui
     displayName: Run test suite
 
   - task: GithubRelease@0 
@@ -184,7 +184,7 @@ jobs:
 
   - bash: |
       source activate $ENV_NAME
-      #pytest --mpl --pyargs hyperspyui
+      pytest --mpl --pyargs hyperspyui
     displayName: Run test suite
 
   - task: GithubRelease@0 
