@@ -1,0 +1,28 @@
+hyperspyui.\_tools package
+==========================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   hyperspyui._tools.figuretool
+   hyperspyui._tools.gaussiantool
+   hyperspyui._tools.hometool
+   hyperspyui._tools.linetool
+   hyperspyui._tools.multiselectiontool
+   hyperspyui._tools.pointertool
+   hyperspyui._tools.selectiontool
+   hyperspyui._tools.signalfiguretool
+   hyperspyui._tools.tool
+   hyperspyui._tools.zoompan
+
+Module contents
+---------------
+
+.. automodule:: hyperspyui._tools
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

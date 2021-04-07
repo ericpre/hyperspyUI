@@ -1,0 +1,35 @@
+hyperspyui.widgets package
+==========================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   hyperspyui.widgets._editor_server
+   hyperspyui.widgets.axespicker
+   hyperspyui.widgets.colorpicker
+   hyperspyui.widgets.consolewidget
+   hyperspyui.widgets.contrastwidget
+   hyperspyui.widgets.dataviewwidget
+   hyperspyui.widgets.editorwidget
+   hyperspyui.widgets.elementpicker
+   hyperspyui.widgets.extendedqwidgets
+   hyperspyui.widgets.flowlayout
+   hyperspyui.widgets.periodictable
+   hyperspyui.widgets.pickxsignals
+   hyperspyui.widgets.pluginmanagerwidget
+   hyperspyui.widgets.settingsdialog
+   hyperspyui.widgets.signallist
+   hyperspyui.widgets.stringinput
+   hyperspyui.widgets.traitswidget
+
+Module contents
+---------------
+
+.. automodule:: hyperspyui.widgets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

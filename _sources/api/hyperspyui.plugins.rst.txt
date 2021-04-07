@@ -1,0 +1,55 @@
+hyperspyui.plugins package
+==========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   hyperspyui.plugins.user_plugins
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   hyperspyui.plugins.align
+   hyperspyui.plugins.alignzlp
+   hyperspyui.plugins.axesconf
+   hyperspyui.plugins.axesorderwidget
+   hyperspyui.plugins.basicsignal
+   hyperspyui.plugins.basicspectrum
+   hyperspyui.plugins.cmappicker
+   hyperspyui.plugins.croptool
+   hyperspyui.plugins.dataastext
+   hyperspyui.plugins.dmannotations
+   hyperspyui.plugins.eelsdb
+   hyperspyui.plugins.fft
+   hyperspyui.plugins.fitting
+   hyperspyui.plugins.gaussianfilter
+   hyperspyui.plugins.gitgetter
+   hyperspyui.plugins.imagerotation
+   hyperspyui.plugins.linemeasure
+   hyperspyui.plugins.metadataeditor
+   hyperspyui.plugins.mirrorplot
+   hyperspyui.plugins.moviesaver
+   hyperspyui.plugins.mva
+   hyperspyui.plugins.plotutils
+   hyperspyui.plugins.plugin
+   hyperspyui.plugins.rebin
+   hyperspyui.plugins.recorderwidget
+   hyperspyui.plugins.segmentation
+   hyperspyui.plugins.stylesheet
+   hyperspyui.plugins.tightlayout
+   hyperspyui.plugins.virtual_aperture
+
+Module contents
+---------------
+
+.. automodule:: hyperspyui.plugins
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
