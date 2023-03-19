@@ -39,18 +39,3 @@ jobs:
         run: |
           pip install -e .[build-doc]
 
-      - name: Build doc
-        run: |
-          sudo apt-get install xvfb
-          cd doc
-          xvfb-run make html
-
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ./doc/build/*
-
-      - uses: peaceiris/actions-gh-pages@bd8c6b06eba6b3d25d72b7a1767993c0aeee42e7
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: doc/build/html
