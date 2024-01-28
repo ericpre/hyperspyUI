@@ -34,7 +34,7 @@ classifiers = [
 ]
 dependencies = [
   "exspy",
-  "hyperspy >= 2.0rc0",
+  "hyperspy >= 2.0",
   "hyperspy-gui-traitsui >= 2.0",
   "matplotlib >= 3.0.3",
   "packaging",
@@ -66,6 +66,10 @@ file = "COPYING.txt"
   "sphinxcontrib-towncrier",
   "towncrier",
 ]
+"qt" = [
+  "PyQt5",
+  "PyQtWebEngine"
+]
 "tests" = [
   "pytest-qt",
   "pytest-cov",
@@ -73,8 +77,7 @@ file = "COPYING.txt"
   "setuptools-scm",
 ]
 "all" = [
-  "exspy[gui-jupyter]",
-  "exspy[gui-traitsui]"
+  "hyperspyui[qt]",
 ]
 
 [project.urls]
